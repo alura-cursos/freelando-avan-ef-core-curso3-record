@@ -34,6 +34,26 @@ public static class PropostasExtensions
 
         }).WithTags("Propostas").WithOpenApi();
 
+        app.MapPost("/propostas/upload", async ([FromForm] IFormFile file, [FromServices] IUnitOfWork unitOfOrk) =>
+        {
+            if(file == null || file.Length ==0) {
+                return Results.BadRequest("Arquivo não encontrado.");
+            }
+
+            var propostas = new List<Propostas>();
+
+            using (var stream = new StreamReader(file.OpenReadStream()))
+            {
+                var content = await stream.ReadToEndAsync();
+                propostas = JsonSerializer.Deserialize<List<Propostas>>(content);
+            }
+
+            unitOfOrk.contexto.Propostas.AddRange(propostas);
+            await unitOfOrk.contexto.SaveChangesAsync();
+
+            return Results.Ok(propostas);
+
+        }).WithTags("Propostas").Accepts<IFormFile>("multipart/form-data").DisableAntiforgery();
     }
 }
 
