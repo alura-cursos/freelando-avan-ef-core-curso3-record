@@ -18,7 +18,14 @@ public static class PropostasExtensions
 
         }).WithTags("Propostas").WithOpenApi();
 
+        app.MapGet("/propostas/projeto", async ([FromServices] IUnitOfWork unitOfOrk, [FromQuery] Guid id_projeto) =>
+        {
+            var propostas = await unitOfOrk.contexto.Propostas.FromSqlRaw("EXEC dbo.sp_PropostaPorProjeto @id_projeto={0}", id_projeto).ToListAsync();
 
+            return Results.Ok(propostas);
+
+        }).WithTags("Propostas").WithOpenApi();
+       
     }
 }
 
