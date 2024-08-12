@@ -25,8 +25,23 @@ public static class PropostasExtensions
             return Results.Ok(propostas);
 
         }).WithTags("Propostas").WithOpenApi();
-       
+
+        app.MapGet("/propostas/summary", async ([FromServices] IUnitOfWork unitOfOrk) =>
+        {
+            var propostasSummmary = await unitOfOrk.contexto.Database.SqlQueryRaw<PropostaSummary>("EXEC dbo.sp_PropostaSummary").ToListAsync();
+
+            return Results.Ok(propostasSummmary);
+
+        }).WithTags("Propostas").WithOpenApi();
+
     }
+}
+
+public class PropostaSummary
+{
+    public Guid Id_Proposta { get; set; }
+    public DateTime Data_Proposta { get; set; }
+    public DateTime Prazo_Entrega { get; set; }
 }
 
 
