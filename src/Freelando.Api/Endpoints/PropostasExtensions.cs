@@ -79,6 +79,29 @@ public static class PropostasExtensions
 
         }).WithTags("Propostas").Accepts<IFormFile>("multipart/form-data").DisableAntiforgery();
 
+        app.MapDelete("/propostas/upload/delete", async ([FromForm] IFormFile file, [FromServices] IUnitOfWork unitOfOrk) =>
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Results.BadRequest("Arquivo não encontrado.");
+            }
+
+            var propostasId = new List<Guid>();
+
+            using (var stream = new StreamReader(file.OpenReadStream()))
+            {
+                var content = await stream.ReadToEndAsync();
+                propostasId = JsonSerializer.Deserialize<List<Guid>>(content);
+            }
+
+            unitOfOrk.contexto.Propostas.Where(p => propostasId.Contains(p.Id)).ExecuteDelete();
+
+            await unitOfOrk.contexto.SaveChangesAsync();
+
+            return Results.Ok("Propostas removidas!");
+
+        }).WithTags("Propostas").Accepts<IFormFile>("multipart/form-data").DisableAntiforgery();
+
     }
 }
 
