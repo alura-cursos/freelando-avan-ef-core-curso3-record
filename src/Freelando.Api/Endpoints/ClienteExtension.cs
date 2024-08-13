@@ -8,6 +8,7 @@ using System;
 using Freelando.Dados.UnitOfWork;
 using Microsoft.Extensions.Caching.Memory;
 using Freelando.Api.Responses;
+using Freelando.Api.Services;
 
 
 namespace Freelando.Api.Endpoints;
@@ -16,22 +17,22 @@ public static class ClienteExtension
 {
     public static void AddEndPointClientes(this WebApplication app)
     {
+        const string chaveCache = "clientes";
 
         app.MapGet("/clientes", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork,IMemoryCache cache) =>
-        {
-            const string chaveCache = "clientes";
+        {           
 
             if(!cache.TryGetValue(chaveCache,out ICollection<ClienteResponse> clientesCache))
             {
                 clientesCache = converter.EntityListToResponseList(await unitOfWork.ClienteRepository.BuscarTodos());
                 cache.Set(chaveCache, clientesCache,new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
-            }
-                                    
+            }                                   
 
             return Results.Ok(await Task.FromResult(clientesCache));
 
         }).WithTags("Cliente").WithOpenApi();
                 
+
 
         app.MapGet("/clientes/identificador-nome", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork) =>
         {

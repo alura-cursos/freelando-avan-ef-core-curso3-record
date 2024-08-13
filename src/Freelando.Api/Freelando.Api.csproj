@@ -20,6 +20,7 @@
   <ItemGroup>    
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />    
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />    
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.8" />    
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.6.2" />
   </ItemGroup>
