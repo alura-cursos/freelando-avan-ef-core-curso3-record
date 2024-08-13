@@ -31,7 +31,21 @@ public static class ClienteExtension
             return Results.Ok(await Task.FromResult(clientesCache));
 
         }).WithTags("Cliente").WithOpenApi();
-                
+
+        app.MapGet("/clientes/redis", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, [FromServices] ICacheService cacheService) =>
+        {
+            var clientesCache = await cacheService.GetCachedDataAsync<IEnumerable<ClienteResponse>>(chaveCache);
+
+            if (clientesCache != null)
+            {
+                return Results.Ok(clientesCache);
+            }
+            var clientes = converter.EntityListToResponseList(await unitOfWork.ClienteRepository.BuscarTodos());
+            await cacheService.SetCachedDataAsync(chaveCache, clientes, TimeSpan.FromMinutes(5));
+
+            return Results.Ok(await Task.FromResult(clientes));
+
+        }).WithTags("Cliente").WithOpenApi();
 
 
         app.MapGet("/clientes/identificador-nome", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork) =>
