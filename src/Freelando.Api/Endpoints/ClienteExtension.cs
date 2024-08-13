@@ -16,15 +16,19 @@ public static class ClienteExtension
 {
     public static void AddEndPointClientes(this WebApplication app)
     {
-    
 
-        app.MapGet("/clientes", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork) =>
-        {            
+        app.MapGet("/clientes", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork,IMemoryCache cache) =>
+        {
+            const string chaveCache = "clientes";
 
-                var clientes = converter.EntityListToResponseList(await unitOfWork.ClienteRepository.BuscarTodos());
-               
+            if(!cache.TryGetValue(chaveCache,out ICollection<ClienteResponse> clientesCache))
+            {
+                clientesCache = converter.EntityListToResponseList(await unitOfWork.ClienteRepository.BuscarTodos());
+                cache.Set(chaveCache, clientesCache,new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+            }
+                                    
 
-            return Results.Ok(await Task.FromResult(clientes));
+            return Results.Ok(await Task.FromResult(clientesCache));
 
         }).WithTags("Cliente").WithOpenApi();
                 

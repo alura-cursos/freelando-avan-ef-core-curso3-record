@@ -24,6 +24,8 @@ builder.Services.AddDbContext<FreelandoClientesContext>((options) =>
     options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=FreelandoClientes;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 });
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddTransient<FreelandoContext>();
 builder.Services.AddScoped<IEspecialidadeRepository, EspecialidadeRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
