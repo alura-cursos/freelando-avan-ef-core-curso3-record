@@ -112,12 +112,13 @@ public static class ClienteExtension
         }).WithTags("Cliente").WithOpenApi();
 
         app.MapGet("/clientes/parametro", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, string parametro) =>
-        {
-         
+        {     
             var clientes = unitOfWork.contexto.Clientes.FromSqlRaw("SELECT * FROM TB_Clientes WHERE Nome ={0}",parametro).ToList();
 
             return Results.Ok(await Task.FromResult(clientes));
         }).WithTags("Cliente").WithOpenApi();
+
+
 
     }
 }
