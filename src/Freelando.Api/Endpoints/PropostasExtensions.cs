@@ -47,7 +47,7 @@ public static class PropostasExtensions
                 var content = await stream.ReadToEndAsync();
                 propostas = JsonSerializer.Deserialize<List<Propostas>>(content);
             }
-
+          
             unitOfOrk.contexto.Propostas.AddRange(propostas);
             await unitOfOrk.contexto.SaveChangesAsync();
 
@@ -55,27 +55,30 @@ public static class PropostasExtensions
 
         }).WithTags("Propostas").Accepts<IFormFile>("multipart/form-data").DisableAntiforgery();
 
-        app.MapPost("/propostas/upload/update", async ([FromForm] IFormFile file, [FromServices] IUnitOfWork unitOfOrk) =>
+        app.MapPut("/propostas/upload/update", async ([FromForm] IFormFile file, [FromServices] IUnitOfWork unitOfOrk) =>
         {
             if (file == null || file.Length == 0)
             {
                 return Results.BadRequest("Arquivo não encontrado.");
             }
 
-            var propostas = new List<Propostas>();
+            var profissionaisId = new List<Guid>();
 
             using (var stream = new StreamReader(file.OpenReadStream()))
             {
                 var content = await stream.ReadToEndAsync();
-                propostas = JsonSerializer.Deserialize<List<Propostas>>(content);
+                profissionaisId = JsonSerializer.Deserialize<List<Guid>>(content);
             }
 
-            unitOfOrk.contexto.Propostas.AddRange(propostas);
+            unitOfOrk.contexto.Propostas.Where(p => profissionaisId.Contains(p.Id)).
+            ExecuteUpdate(p => p.SetProperty(p => p.ValorProposta, p => p.ValorProposta + p.ValorProposta * 0.3m));
+
             await unitOfOrk.contexto.SaveChangesAsync();
 
-            return Results.Ok(propostas);
+            return Results.Ok("Propostas atualizadas!");
 
         }).WithTags("Propostas").Accepts<IFormFile>("multipart/form-data").DisableAntiforgery();
+
     }
 }
 
