@@ -68,10 +68,11 @@ public static class ClienteExtension
             return Results.Ok(await Task.FromResult(clientes));
         }).WithTags("Cliente").WithOpenApi();
 
-        app.MapPost("/cliente", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, ClienteRequest clienteRequest) =>
+        app.MapPost("/cliente", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, ClienteRequest clienteRequest, [FromServices]ICacheService cacheService) =>
         {
             var cliente = converter.RequestToEntity(clienteRequest);    
-            await unitOfWork.ClienteRepository.Adicionar(cliente);      
+            await unitOfWork.ClienteRepository.Adicionar(cliente);
+            await cacheService.RemoveCachedDataAsync(chaveCache);
             await unitOfWork.Commit();
 
             return Results.Created($"/cliente/{cliente.Id}", cliente);
@@ -109,7 +110,6 @@ public static class ClienteExtension
 
             return Results.NoContent();
         }).WithTags("Cliente").WithOpenApi();
-
 
         app.MapGet("/clientes/parametro", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, string parametro) =>
         {

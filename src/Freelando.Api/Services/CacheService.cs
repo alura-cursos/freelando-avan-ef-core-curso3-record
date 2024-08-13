@@ -20,6 +20,11 @@ public class CacheService : ICacheService
 
     }
 
+    public async Task RemoveCachedDataAsync(string key)
+    {
+        await cache.RemoveAsync(key);
+    }
+
     public async Task SetCachedDataAsync<T>(string key, T data, TimeSpan expiration)
     {
         var options = new DistributedCacheEntryOptions
