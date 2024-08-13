@@ -70,7 +70,9 @@ public static class ClienteExtension
 
         app.MapPost("/cliente", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, ClienteRequest clienteRequest, [FromServices]ICacheService cacheService) =>
         {
-            var cliente = converter.RequestToEntity(clienteRequest);    
+            var cliente = converter.RequestToEntity(clienteRequest);
+            var hashData = BCrypt.Net.BCrypt.HashPassword(cliente.Cpf);
+            cliente.Cpf = hashData;
             await unitOfWork.ClienteRepository.Adicionar(cliente);
             await cacheService.RemoveCachedDataAsync(chaveCache);
             await unitOfWork.Commit();
