@@ -75,7 +75,7 @@ public static class ClienteExtension
             await cacheService.RemoveCachedDataAsync(chaveCache);
             await unitOfWork.Commit();
 
-            return Results.Created($"/cliente/{cliente.Id}", cliente);
+            return Results.Created($"/cliente/{cliente.Id}",cliente);
         }).WithTags("Cliente").WithOpenApi();
 
         app.MapPut("/cliente/{id}", async ([FromServices] ClienteConverter converter, [FromServices] IUnitOfWork unitOfWork, Guid id, ClienteRequest clienteRequest) =>
