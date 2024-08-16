@@ -1,0 +1,20 @@
+[
+  {
+    "Id": "d48113d8-2c1f-4b7d-9a8e-63a2c76963e8",
+    "ProfissionalId": "409619FF-8B86-D011-B42D-00C04FC964FF",
+    "ProjetoId": "63DE821F-63A0-4899-BD24-2D9A86160AEC",
+    "ValorProposta": 3000.00,
+    "DataProposta": "2023-07-12T10:15:30.045Z",
+    "Mensagem": "Criar portal de notícias",
+    "PrazoEntrega": "2023-08-11T10:15:30.045Z"
+  },
+  {
+    "Id": "7a736d10-5e62-41a6-8bb4-bd7a6d2cf5a4",
+    "ProfissionalId": "409619FF-8B86-D011-B42D-00C04FC964FF",
+    "ProjetoId": "BA9996AD-872F-4D94-9CAB-A897342BAC43",
+    "ValorProposta": 6238.11,
+    "DataProposta": "2023-07-11T10:15:30.045Z",
+    "Mensagem": "Documentar e hospedar site",
+    "PrazoEntrega": "2023-08-10T10:15:30.045Z"
+  }
+]
